@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>KBT of Haverstraw</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI";
+      background:
+        linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.45)),
+        url('https://streetviewpixels-pa.googleapis.com/v1/thumbnail?cb_client=maps_sv.tactile&w=1600&h=1000&pitch=0&panoid=KKzgT_EdNtJc0bH0Klx0PQ&yaw=281.80786')
+        no-repeat center center fixed;
+      background-size: cover;
+      color: #222;
+    }
+
+    header {
+      background: rgba(31, 59, 99, 0.9);
+      color: #fff;
+      padding: 16px 5%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .logo-circle {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      border: 2px solid #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 0.9rem;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.4);
+    }
+    .brand-text h1 {
+      margin: 0;
+      font-size: 1.5rem;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.4);
+    }
+    .subtitle {
+      font-size: 0.9rem;
+      opacity: 0.9;
+    }
+    .hebrew-title {
+      font-size: 0.9rem;
+      margin-top: 2px;
+      opacity: 0.9;
+      /* Replace this with the real Hebrew name when you’re ready */
+    }
+
+    nav {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 10px;
+    }
+    nav a {
+      color: #fff;
+      text-decoration: none;
+      font-size: 0.95rem;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.4);
+    }
+    nav a:hover {
+      text-decoration: underline;
+    }
+
+    /* NEWS TICKER */
+    .news-ticker {
+      width: 100%;
+      overflow: hidden;
+      background: rgba(31, 59, 99, 0.9);
+      color: #fff;
+      padding: 8px 0;
+      font-size: 0.95rem;
+      font-weight: 500;
+      border-bottom: 2px solid #d9d9d9;
+    }
+    .news-track {
+      white-space: nowrap;
+      display: inline-block;
+      padding-left: 100%;
+      animation: scroll-left 18s linear infinite;
+    }
+    .news-track span {
+      padding-right: 100%;
+    }
+    @keyframes scroll-left {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-100%); }
+    }
+
+    main {
+      padding: 24px 5% 40px;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+    section {
+      margin-bottom: 32px;
+      background: rgba(255, 255, 255, 0.93);
+      border-radius: 10px;
+      padding: 20px 20px 25px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.18);
+    }
+    section h2 {
+      margin-top: 0;
+      font-size: 1.4rem;
+      border-bottom: 1px solid #e0e3ec;
+      padding-bottom: 8px;
+      margin-bottom: 15px;
+      color: #1f3b63;
+    }
+    .two-columns {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 20px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.95rem;
+    }
+    table th, table td {
+      text-align: left;
+      padding: 6px 4px;
+      border-bottom: 1px solid #eceff5;
+    }
+    table th {
+      font-weight: 600;
+      background: #f3f4f9;
+    }
+    .event-item {
+      margin-bottom: 12px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #eceff5;
+    }
+    .event-item:last-child {
+      border-bottom: none;
+    }
+    .event-title {
+      font-weight: 600;
+    }
+    .event-meta {
+      font-size: 0.85rem;
+      color: #555;
+    }
+    .btn {
+      display: inline-block;
+      padding: 10px 16px;
+      border-radius: 999px;
+      border: none;
+      text-decoration: none;
+      font-size: 0.95rem;
+      cursor: pointer;
+      background: #1f3b63;
+      color: #fff;
+    }
+    .btn.secondary {
+      background: #267a4a;
+    }
+    .contact-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.3fr) minmax(0, 1.7fr);
+      gap: 20px;
+    }
+    @media (max-width: 800px) {
+      header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      nav {
+        width: 100%;
+        justify-content: flex-start;
+      }
+      .contact-grid {
+        grid-template-columns: 1fr;
+      }
+      main {
+        padding: 18px 4% 30px;
+      }
+      section {
+        padding: 16px 16px 20px;
+      }
+    }
+    .contact-item {
+      margin-bottom: 8px;
+      font-size: 0.95rem;
+    }
+    .small-note {
+      font-size: 0.85rem;
+      color: #666;
+      margin-top: 6px;
+    }
+
+    /* Admin panel */
+    .admin-panel {
+      font-size: 0.9rem;
+    }
+    .admin-panel textarea {
+      width: 100%;
+      min-height: 80px;
+      padding: 6px;
+      font-family: inherit;
+      font-size: 0.9rem;
+    }
+    .admin-panel .admin-status {
+      font-size: 0.85rem;
+      color: #267a4a;
+      margin-left: 8px;
+    }
+
+    footer {
+      background: rgba(31, 59, 99, 0.95);
+      color: #fff;
+      text-align: center;
+      font-size: 0.85rem;
+      padding: 10px 5%;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="brand">
+    <div class="logo-circle">KBT</div>
+    <div class="brand-text">
+      <h1>KBT of Haverstraw</h1>
+      <div class="subtitle">Community Shul in Thiells, NY</div>
+      <div class="hebrew-title">קהל בני תורה</div>
+    </div>
+  </div>
+  <nav>
+    <a href="#davening">Davening</a>
+    <a href="#events">Events</a>
+    <a href="#membership">Membership / Donations</a>
+    <a href="#contact">Contact</a>
+  </nav>
+</header>
+
+<!-- NEWS BAR -->
+<div class="news-ticker">
+  <div class="news-track">
+    <span>
+      🔔 Shabbos Mevorchim Kiddush this week • 📅 New zmanim updated • 🧱 Building campaign updates coming soon • 🔥 Thursday night Parsha shiur at 9:15 PM •
+    </span>
+  </div>
+</div>
+
+<main>
+
+  <!-- DAVENING SCHEDULE -->
+  <section id="davening">
+    <h2>Davening Schedule</h2>
+    <div class="two-columns">
+      <div>
+        <h3>Weekday Schedule</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Day</th>
+              <th>Shacharis</th>
+              <th>Mincha</th>
+              <th>Maariv</th>
+            </tr>
+          </thead>
+          <tbody id="weekday-schedule">
+            <tr><td>Sunday</td><td>7:30</td><td>—</td><td>8:30, 10:00</td></tr>
+            <tr><td>Monday</td><td>7:00</td><td>—</td><td>8:30, 10:00</td></tr>
+            <tr><td>Tuesday</td><td>7:00</td><td>—</td><td>8:30, 10:00</td></tr>
+            <tr><td>Wednesday</td><td>7:00</td><td>—</td><td>8:30, 10:00</td></tr>
+            <tr><td>Thursday</td><td>7:00</td><td>—</td><td>8:30, 10:00</td></tr>
+            <tr><td>Friday</td><td>7:00</td><td>—</td><td>—</td></tr>
+          </tbody>
+        </table>
+        <p class="small-note">Times may change with the season. Check weekly announcements for updates.</p>
+      </div>
+
+      <div>
+        <h3>Shabbos Schedule</h3>
+        <table>
+          <thead>
+            <tr><th>Event</th><th>Time</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Mincha (Erev Shabbos)</td><td>10 minutes before Shkiah</td></tr>
+            <tr><td>Kabbalas Shabbos</td><td>After Mincha</td></tr>
+            <tr><td>Shacharis</td><td>8:30 AM</td></tr>
+            <tr><td>Mincha</td><td>40 minutes before Shkiah</td></tr>
+            <tr><td>Maariv</td><td>60 minutes after Shkiah</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- EVENTS -->
+  <section id="events">
+    <h2>Events & Announcements</h2>
+    <div id="events-list">
+      <div class="event-item">
+        <div class="event-title">Shabbos Mevorchim Kiddush</div>
+        <div class="event-meta">Next Shabbos Mevorchim • After Musaf</div>
+        <div class="event-description">Sponsored by community members. Contact the office to sponsor.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MEMBERSHIP -->
+  <section id="membership">
+    <h2>Membership & Donations</h2>
+    <p>KBT of Haverstraw is supported by its members and friends. To join or renew, please contact the office.</p>
+
+    <h3>Membership</h3>
+    <ul>
+      <li>Family Membership: $360 per year</li>
+    </ul>
+
+    <h3>Donate Online</h3>
+    <p>
+      <a class="btn"
+         href="https://donate.banquest.com/haverstraw#"
+         target="_blank">
+         Donate via Banquest
+      </a>
+    </p>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact">
+    <h2>Contact & Location</h2>
+
+    <div class="contact-grid">
+      <div>
+        <h3>Contact Details</h3>
+        <div class="contact-item"><strong>Address:</strong> 62 Riverglen Dr, Thiells, NY 10984</div>
+        <div class="contact-item"><strong>Email:</strong> info@kbtofhaverstraw.org</div>
+        <div class="contact-item"><strong>Phone:</strong> (555) 123-4567</div>
+        <div class="contact-item"><strong>Rav:</strong> Rabbi Kagan</div>
+
+        <h3>Map</h3>
+        <iframe
+          title="Shul Location"
+          width="100%"
+          height="300"
+          style="border:0; border-radius:10px;"
+          loading="lazy"
+          allowfullscreen
+          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2969.4456977832846!2d-74.02524432382972!3d41.19715347131026!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c2dbeab0cf7ad9%3A0xaea5d1f276f4e5ed!2s62%20Riverglen%20Dr%2C%20Thiells%2C%20NY%2010984!5e0!3m2!1sen!2sus!4v1731546185018!5m2!1sen!2sus">
+        </iframe>
+
+        <h3>Parking & Directions</h3>
+        <p class="small-note">
+          Street parking is available on Riverglen Dr. Please be mindful of neighbors and driveways.
+        </p>
+        <p>
+          <a class="btn secondary"
+             href="https://www.google.com/maps/dir/?api=1&destination=62+Riverglen+Dr,+Thiells,+NY+10984"
+             target="_blank">
+            Get Directions
+          </a>
+        </p>
+      </div>
+    </div>
+  </section>
+
+ 
+
+<footer>
+  © <span id="year"></span> KBT of Haverstraw. All rights reserved.
+</footer>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const tickerSpan = document.querySelector('.news-track span');
+    const defaultText =
+      '🔔 Shabbos Mevorchim Kiddush this week • 📅 New zmanim updated • 🧱 Building campaign updates coming soon • 🔥 Thursday night Parsha shiur at 9:15 PM •';
+
+    const storedText = localStorage.getItem('kbtNewsTicker');
+    if (tickerSpan) {
+      tickerSpan.textContent = storedText || defaultText;
+    }
+
+    const yearEl = document.getElementById('year');
+    if (yearEl) {
+      yearEl.textContent = new Date().getFullYear();
+    }
+
+    const form = document.getElementById('admin-news-form');
+    const textarea = document.getElementById('admin-news-text');
+    const status = document.getElementById('admin-status');
+
+    if (form && textarea && tickerSpan) {
+      textarea.value = tickerSpan.textContent.trim();
+
+      form.addEventListener('submit', function (e) {
+        e.preventDefault();
+        const value = textarea.value.trim();
+        if (!value) return;
+        tickerSpan.textContent = value;
+        localStorage.setItem('kbtNewsTicker', value);
+        if (status) {
+          status.textContent = 'Updated';
+          setTimeout(() => { status.textContent = ''; }, 2000);
+        }
+      });
+    }
+  });
+</script>
+
+</body>
+</html>
