@@ -48,15 +48,11 @@
       font-size: 1.5rem;
       text-shadow: 0 1px 2px rgba(0,0,0,0.4);
     }
-    .subtitle {
-      font-size: 0.9rem;
-      opacity: 0.9;
-    }
     .hebrew-title {
       font-size: 0.9rem;
       margin-top: 2px;
       opacity: 0.9;
-      קהל בני תורה
+      direction: rtl;
     }
 
     nav {
@@ -202,23 +198,6 @@
       margin-top: 6px;
     }
 
-    /* Admin panel */
-    .admin-panel {
-      font-size: 0.9rem;
-    }
-    .admin-panel textarea {
-      width: 100%;
-      min-height: 80px;
-      padding: 6px;
-      font-family: inherit;
-      font-size: 0.9rem;
-    }
-    .admin-panel .admin-status {
-      font-size: 0.85rem;
-      color: #267a4a;
-      margin-left: 8px;
-    }
-
     footer {
       background: rgba(31, 59, 99, 0.95);
       color: #fff;
@@ -227,6 +206,29 @@
       padding: 10px 5%;
       margin-top: 10px;
     }
+	nav {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+nav a {
+  padding: 6px 14px;
+  border-radius: 6px;
+  background: rgba(255,255,255,0.12);
+  color: #fff;
+  text-decoration: none;
+  font-size: 0.95rem;
+  font-weight: 500;
+  transition: background 0.2s, color 0.2s;
+}
+
+nav a:hover {
+  background: rgba(255,255,255,0.25);
+  color: #fff;
+}
+
   </style>
 </head>
 <body>
@@ -241,6 +243,7 @@
   </div>
   <nav>
     <a href="#davening">Davening</a>
+    <a href="https://kbtofhaverstraw.org/Zmanim.pdf" target="_blank">Haverstraw Zmanim</a>
     <a href="#events">Events</a>
     <a href="#membership">Membership / Donations</a>
     <a href="#contact">Contact</a>
@@ -251,7 +254,7 @@
 <div class="news-ticker">
   <div class="news-track">
     <span>
-      📅 New zmanim updated 📅
+      📅 New Zmanim updated 📅
     </span>
   </div>
 </div>
@@ -282,11 +285,14 @@
             <tr><td>Friday</td><td>7:00</td><td>—</td><td>—</td></tr>
           </tbody>
         </table>
+        <p class="small-note">
+          Today’s shkiah (Mt Ivy): <span id="shkiah-time">Loading...</span>
+        </p>
         <p class="small-note">Times may change with the season. Check weekly announcements for updates.</p>
       </div>
 
       <div>
-        <h3> Schedule</h3>
+        <h3>Shabbos Schedule</h3>
         <table>
           <thead>
             <tr><th>Event</th><th>Time</th></tr>
@@ -296,15 +302,18 @@
             <tr><td>Kabbalas Shabbos</td><td>After Mincha</td></tr>
             <tr><td>Shacharis</td><td>8:30 AM</td></tr>
             <tr><td>Mincha</td><td>TBA</td></tr>
-            <tr><td>Maariv</td><td>60 minutes after Shkiah</td></tr>
+            <tr>
+              <td>Maariv</td>
+              <td><span id="shabbos-maariv-time">60 minutes after Shkiah</span></td>
+            </tr>
           </tbody>
         </table>
       </div>
     </div>
   </section>
 
-  <!-- EVENTS -->
-  <!--<section id="events">
+  <!-- EVENTS (currently commented out)
+  <section id="events">
     <h2>Events & Announcements</h2>
     <div id="events-list">
       <div class="event-item">
@@ -313,17 +322,13 @@
         <div class="event-description">Sponsored by community members. Contact the office to sponsor.</div>
       </div>
     </div>
-  </section>-->
+  </section>
+  -->
 
   <!-- MEMBERSHIP -->
   <section id="membership">
     <h2>Membership & Donations</h2>
     <p>KBT of Haverstraw is supported by its members and friends.</p>
-
-     <!--<h3>Membership</h3>
-    <ul>
-      <li></li>
-    </ul>-->
 
     <h3>Donate Online</h3>
     <p>
@@ -344,7 +349,7 @@
         <h3>Contact Details</h3>
         <div class="contact-item"><strong>Address:</strong> 62 Riverglen Dr, Thiells, NY 10984</div>
         <div class="contact-item"><strong>Email:</strong> info@kbtofhaverstraw.org</div>
-        <div class="contact-item"><strong>Rav:</strong> Rabbi Kagan</div>
+        <div class="contact-item"><strong>Rav:</strong> Harav Kagan</div>
 
         <h3>Map</h3>
         <iframe
@@ -372,7 +377,7 @@
     </div>
   </section>
 
- 
+</main>
 
 <footer>
   © <span id="year"></span> KBT of Haverstraw. All rights reserved.
@@ -380,48 +385,69 @@
 
 <script>
   document.addEventListener('DOMContentLoaded', function () {
-    const tickerSpan = document.querySelector('.news-track span');
-    const defaultText =
-      📅 New Zmanim updated 📅
-
-    const storedText = localStorage.getItem('kbtNewsTicker');
-    if (tickerSpan) {
-      tickerSpan.textContent = storedText || defaultText;
-    }
-
+    // Footer year
     const yearEl = document.getElementById('year');
     if (yearEl) {
       yearEl.textContent = new Date().getFullYear();
     }
 
-    const form = document.getElementById('admin-news-form');
-    const textarea = document.getElementById('admin-news-text');
-    const status = document.getElementById('admin-status');
+    const LAT = 41.19194;   // Mt Ivy approx latitude
+    const LNG = -74.03222;  // Mt Ivy approx longitude
 
-    if (form && textarea && tickerSpan) {
-      textarea.value = tickerSpan.textContent.trim();
+    // 1) Today's shkiah (sunset) for Mt Ivy
+    const shkiahEl = document.getElementById('shkiah-time');
+    if (shkiahEl) {
+      fetch(`https://api.sunrise-sunset.org/json?lat=${LAT}&lng=${LNG}&date=today&formatted=0`)
+        .then(response => response.json())
+        .then(data => {
+          if (data.status === 'OK' && data.results && data.results.sunset) {
+            const sunsetUtc = new Date(data.results.sunset);
+            const options = { hour: 'numeric', minute: '2-digit' };
+            const localTime = sunsetUtc.toLocaleTimeString([], options);
+            shkiahEl.textContent = localTime;
+          } else {
+            shkiahEl.textContent = 'N/A';
+          }
+        })
+        .catch(() => {
+          shkiahEl.textContent = 'N/A';
+        });
+    }
 
-      form.addEventListener('submit', function (e) {
-        e.preventDefault();
-        const value = textarea.value.trim();
-        if (!value) return;
-        tickerSpan.textContent = value;
-        localStorage.setItem('kbtNewsTicker', value);
-        if (status) {
-          status.textContent = 'Updated';
-          setTimeout(() => { status.textContent = ''; }, 2000);
-        }
-      });
+    // 2) This Shabbos Maariv = 1 hour after shkiah (using next Shabbos sunset)
+    const shabbosMaarivEl = document.getElementById('shabbos-maariv-time');
+    if (shabbosMaarivEl) {
+      const today = new Date();
+      const day = today.getDay(); // 0=Sun ... 6=Sat
+      let daysUntilShabbos = (6 - day + 7) % 7; // next Saturday (0 if today is Sat)
+      const shabbosDate = new Date(today);
+      shabbosDate.setDate(today.getDate() + daysUntilShabbos);
+
+      const y = shabbosDate.getFullYear();
+      const m = String(shabbosDate.getMonth() + 1).padStart(2, '0');
+      const d = String(shabbosDate.getDate()).padStart(2, '0');
+      const shabbosStr = `${y}-${m}-${d}`;
+
+      fetch(`https://api.sunrise-sunset.org/json?lat=${LAT}&lng=${LNG}&date=${shabbosStr}&formatted=0`)
+        .then(response => response.json())
+        .then(data => {
+          if (data.status === 'OK' && data.results && data.results.sunset) {
+            const sunsetUtc = new Date(data.results.sunset);
+            // Add 60 minutes for Maariv
+            sunsetUtc.setMinutes(sunsetUtc.getMinutes() + 60);
+            const options = { hour: 'numeric', minute: '2-digit' };
+            const localTime = sunsetUtc.toLocaleTimeString([], options);
+            shabbosMaarivEl.textContent = localTime;
+          } else {
+            shabbosMaarivEl.textContent = '60 minutes after Shkiah';
+          }
+        })
+        .catch(() => {
+          shabbosMaarivEl.textContent = '60 minutes after Shkiah';
+        });
     }
   });
 </script>
 
 </body>
 </html>
-
-
-
-
-
-
-
